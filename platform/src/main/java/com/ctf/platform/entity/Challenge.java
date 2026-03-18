@@ -1,7 +1,9 @@
 package com.ctf.platform.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.util.List;
@@ -20,15 +22,20 @@ public class Challenge {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotBlank
     private String title;
+    @NotBlank
     private String description;
-    private String difficulty;
+    @NotBlank
     private String flag;
+    private String difficulty;
+
 
 //relacion bidireccional
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "challenge")
     private List<Solve> solves;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "challenge")
+    @JsonIgnore
     private List<Hint> hints;
 }
