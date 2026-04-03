@@ -22,4 +22,10 @@ public class UserController {
         userService.verifyAccount(code);
         return ResponseEntity.ok("Account verified successfully");
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteAccount(@PathVariable Long id){
+        userService.deleteUser(id);
+        return ResponseEntity.ok("The account has been successfully deleted");
+    }
 }

@@ -34,6 +34,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/challenges").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/hints").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/solves").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/users/**").hasAuthority("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .build();
