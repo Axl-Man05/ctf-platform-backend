@@ -3,17 +3,16 @@ package com.ctf.platform.service;
 import com.ctf.platform.entity.User;
 import com.ctf.platform.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
 
 import static java.util.UUID.randomUUID;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
+    private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     public User registerUser(User newUser){
 
@@ -24,6 +23,8 @@ public class UserService {
         newUser.setIsVerified(false);
         newUser.setVerificationCode(randomUUID().toString());
 
+        String encryptedPass = passwordEncoder.encode(newUser.getPassword());
+        newUser.setPassword(encryptedPass);
 
         return userRepository.save(newUser);
     }

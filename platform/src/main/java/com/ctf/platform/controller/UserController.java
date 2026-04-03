@@ -22,5 +22,4 @@ public class UserController {
         userService.verifyAccount(code);
         return ResponseEntity.ok("Account verified successfully");
     }
-
 }
