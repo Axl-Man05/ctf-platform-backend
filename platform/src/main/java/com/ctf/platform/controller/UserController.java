@@ -1,5 +1,6 @@
 package com.ctf.platform.controller;
 
+import com.ctf.platform.dto.RegisterDTO;
 import com.ctf.platform.entity.User;
 import com.ctf.platform.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -13,8 +14,8 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<User> signUp(@RequestBody User user){
-        User savedUser = userService.registerUser(user);
+    public ResponseEntity<User> signUp(@RequestBody RegisterDTO registerDTO){
+        User savedUser = userService.registerUser(registerDTO);
         return ResponseEntity.ok(savedUser);
     }
     @PostMapping("/verify")

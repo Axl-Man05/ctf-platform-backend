@@ -1,5 +1,6 @@
 package com.ctf.platform.service;
 
+import com.ctf.platform.dto.RegisterDTO;
 import com.ctf.platform.entity.User;
 import com.ctf.platform.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,13 @@ import static java.util.UUID.randomUUID;
 public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
-    public User registerUser(User newUser){
+    public User registerUser(RegisterDTO registerDTO){
+
+        User newUser = new User();
+        newUser.setUserName(registerDTO.getUsername());
+        newUser.setEmail(registerDTO.getEmail());
+        newUser.setPassword(registerDTO.getPassword());
+
 
         if(userRepository.existsByEmail(newUser.getEmail())){
             throw new IllegalArgumentException("this Email is already in use");
