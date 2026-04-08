@@ -19,12 +19,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final CustomUserDetailsService customUserDetailsService;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     /*Apagar CSRF
       Volver al servidor "Amnesico" (Stateless)
@@ -44,9 +46,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/hints").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/solves").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/users/**").hasAuthority("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/api/auth/login").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                         .anyRequest().authenticated()
-                )
+                ).addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
