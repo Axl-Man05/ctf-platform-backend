@@ -44,7 +44,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/challenges").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/challenges").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/hints").hasAuthority("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/api/solves").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/solves").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/users/**").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                         .anyRequest().authenticated()

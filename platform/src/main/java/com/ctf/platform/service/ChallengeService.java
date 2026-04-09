@@ -1,5 +1,6 @@
 package com.ctf.platform.service;
 
+import com.ctf.platform.dto.ChallengeDTO;
 import com.ctf.platform.entity.Challenge;
 import com.ctf.platform.repository.ChallengeRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +12,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ChallengeService {
     private final ChallengeRepository challengeRepository;
-    public Challenge createChallenge(Challenge newChallenge){
+    public Challenge createChallenge(ChallengeDTO dto){
+        Challenge newChallenge =  Challenge.builder().title(dto.getTitle())
+                .description(dto.getDescription()).difficulty(dto.getDifficulty())
+                .flag(dto.getFlag()).build();
             return challengeRepository.save(newChallenge);
 
     }

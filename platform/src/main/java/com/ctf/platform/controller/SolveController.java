@@ -1,6 +1,7 @@
 package com.ctf.platform.controller;
 
 
+import com.ctf.platform.dto.SolveDTO;
 import com.ctf.platform.entity.Solve;
 import com.ctf.platform.service.SolveService;
 import jakarta.validation.Valid;
@@ -19,8 +20,7 @@ public class SolveController {
     private final SolveService solveService;
 
     @PostMapping
-    public ResponseEntity<Solve> postSolve(@RequestBody @Valid Solve solve){
-        Solve createSolve = solveService.saveSolve(solve);
-        return ResponseEntity.ok(createSolve);
+    public ResponseEntity<Solve> postSolve(@RequestBody @Valid SolveDTO dto){
+        return ResponseEntity.ok(solveService.submitFlag(dto));
     }
 }

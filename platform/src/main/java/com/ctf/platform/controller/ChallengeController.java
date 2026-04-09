@@ -1,6 +1,7 @@
 package com.ctf.platform.controller;
 
 
+import com.ctf.platform.dto.ChallengeDTO;
 import com.ctf.platform.entity.Challenge;
 import com.ctf.platform.repository.ChallengeRepository;
 import com.ctf.platform.service.ChallengeService;
@@ -29,8 +30,8 @@ public class ChallengeController {
 
 
     @PostMapping
-    public ResponseEntity<Challenge> postChallenge(@RequestBody @Valid Challenge challenge){
-        Challenge createdChallenge = challengeService.createChallenge(challenge);
+    public ResponseEntity<Challenge> postChallenge(@RequestBody @Valid ChallengeDTO dto){
+        Challenge createdChallenge = challengeService.createChallenge(dto);
         return ResponseEntity.ok(createdChallenge);
     }
 

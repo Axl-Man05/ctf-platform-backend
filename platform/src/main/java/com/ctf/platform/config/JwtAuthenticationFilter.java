@@ -39,6 +39,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
              boolean validationToken = jwtService.isTokenValid(jwt, userDetails);
 
             if (validationToken){
+                System.out.println("Permisos del jugador: " + userDetails.getAuthorities());
                 UsernamePasswordAuthenticationToken usrAuthToken = UsernamePasswordAuthenticationToken.
                         authenticated(userDetails, null, userDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(usrAuthToken);
