@@ -12,4 +12,5 @@ public class ChallengeDTO {
     private String description;
     private String difficulty;
     private String flag;
+    private String categoryName;
 }

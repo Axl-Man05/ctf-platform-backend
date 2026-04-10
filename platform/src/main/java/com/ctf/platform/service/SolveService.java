@@ -47,11 +47,8 @@ public class SolveService {
 
         Solve savedSolve = solveRepository.save(solve);
 
-
-
         return new SolveResponseDTO(savedSolve.getId(), savedSolve.getSolvedAt(),
                 savedSolve.getChallenge().getTitle(), savedSolve.getUser().getUsername());
-
 
     }
 }

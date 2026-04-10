@@ -30,7 +30,9 @@ public class Challenge {
     private String flag;
     private String difficulty;
 
-
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 //relacion bidireccional
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "challenge")
     private List<Solve> solves;
