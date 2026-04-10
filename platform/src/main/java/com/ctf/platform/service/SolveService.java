@@ -2,6 +2,7 @@ package com.ctf.platform.service;
 
 
 import com.ctf.platform.dto.SolveDTO;
+import com.ctf.platform.dto.SolveResponseDTO;
 import com.ctf.platform.entity.Challenge;
 import com.ctf.platform.entity.Solve;
 import com.ctf.platform.entity.User;
@@ -25,7 +26,7 @@ public class SolveService {
         return solveRepository.save(newSolve);
     }
 
-    public Solve submitFlag(SolveDTO dto){
+    public SolveResponseDTO submitFlag(SolveDTO dto){
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         User user =  userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new IllegalArgumentException("Usuario not found"));
@@ -44,6 +45,13 @@ public class SolveService {
         solve.setSolvedAt(LocalDateTime.now());
         solve.setChallenge(challenge);
 
-        return solveRepository.save(solve);
+        Solve savedSolve = solveRepository.save(solve);
+
+
+
+        return new SolveResponseDTO(savedSolve.getId(), savedSolve.getSolvedAt(),
+                savedSolve.getChallenge().getTitle(), savedSolve.getUser().getUsername());
+
+
     }
 }
