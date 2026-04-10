@@ -1,10 +1,13 @@
 package com.ctf.platform.service;
 
 
+import com.ctf.platform.dto.HintDTO;
 import com.ctf.platform.entity.Hint;
 import com.ctf.platform.repository.HintRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -17,9 +20,11 @@ public class HintService {
     public Hint getHintByID(Long idHint){
         return hintRepository.findById(idHint).
                 orElseThrow(() -> new IllegalArgumentException("ID doesn't exist"));
-
-
     }
 
+    public List<HintDTO> getAllHintsForChallenge(Long challengeID){
+        List<Hint> hintList =  hintRepository.findByChallengeIdOrderByIdAsc(challengeID);
+        return hintList.stream().map(HintDTO :: new).toList();
+    }
 
 }
