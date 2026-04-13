@@ -39,4 +39,11 @@ public class ChallengeService {
         return  challengeRepository.findById(idChallenge).
                 orElseThrow(() -> new IllegalArgumentException("ID doesn't exist"));
     }
+
+    public List<ChallengeDTO> getChallengesByCategoryName(String categoryName){
+        List<Challenge> filterChallenges = challengeRepository.findByCategoryName(categoryName);
+
+        return filterChallenges.stream().map(ChallengeDTO::new).toList();
+    }
+
 }
