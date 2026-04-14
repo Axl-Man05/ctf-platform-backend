@@ -28,6 +28,10 @@ public class ChallengeController {
         return ResponseEntity.ok(challengeService.getChallengeByID(idChallenge));
     }
 
+    @GetMapping("/category/{categoryName}")
+    public ResponseEntity<List<ChallengeDTO>> challengesByCategoryName(@PathVariable("categoryName") String categoryName){
+        return ResponseEntity.ok(challengeService.getChallengesByCategoryName(categoryName));
+    }
 
     @PostMapping
     public ResponseEntity<Challenge> postChallenge(@RequestBody @Valid ChallengeDTO dto){
