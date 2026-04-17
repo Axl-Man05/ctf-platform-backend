@@ -19,7 +19,7 @@ public class ChallengeController {
     private final ChallengeService challengeService;
 
     @GetMapping
-    public ResponseEntity<List<Challenge>> listChallenges(){
+    public ResponseEntity<List<ChallengeDTO>> listChallenges(){
         return ResponseEntity.ok(challengeService.getChallenges());
     }
 

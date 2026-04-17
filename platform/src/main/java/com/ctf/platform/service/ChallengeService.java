@@ -31,11 +31,14 @@ public class ChallengeService {
             return challengeRepository.save(newChallenge);
     }
 
-    public List<Challenge> getChallenges(){
-        return challengeRepository.findAll();
+    public List<ChallengeDTO> getChallenges(){
+        List<Challenge> challenges = challengeRepository.findAll();
+        return challenges.stream().map(ChallengeDTO::new).toList();
     }
 
     public Challenge getChallengeByID(Long idChallenge){
+
+    //    Challenge challengeById = challengeRepository.findById(idChallenge).orElseThrow(() -> new IllegalArgumentException("ID doesn't exist"));
         return  challengeRepository.findById(idChallenge).
                 orElseThrow(() -> new IllegalArgumentException("ID doesn't exist"));
     }

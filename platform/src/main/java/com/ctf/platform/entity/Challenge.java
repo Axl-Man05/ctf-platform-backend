@@ -27,6 +27,7 @@ public class Challenge {
     @NotBlank
     private String description;
     @NotBlank
+    @JsonIgnore
     private String flag;
     private String difficulty;
 
