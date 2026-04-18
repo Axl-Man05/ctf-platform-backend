@@ -3,6 +3,7 @@ package com.ctf.platform.controller;
 import com.ctf.platform.dto.RegisterDTO;
 import com.ctf.platform.entity.User;
 import com.ctf.platform.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +15,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<User> signUp(@RequestBody RegisterDTO registerDTO){
+    public ResponseEntity<User> signUp(@Valid @RequestBody RegisterDTO registerDTO){
         User savedUser = userService.registerUser(registerDTO);
         return ResponseEntity.ok(savedUser);
     }
