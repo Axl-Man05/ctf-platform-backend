@@ -6,6 +6,8 @@ import com.ctf.platform.entity.Challenge;
 import com.ctf.platform.repository.CategoryRepository;
 import com.ctf.platform.repository.ChallengeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +18,7 @@ import java.util.Optional;
 public class ChallengeService {
     private final ChallengeRepository challengeRepository;
     private final CategoryRepository categoryRepository;
+
 
     public Challenge createChallenge(ChallengeDTO dto){
         Category finalCategory = categoryRepository.
@@ -32,6 +35,8 @@ public class ChallengeService {
     }
 
     public List<ChallengeDTO> getChallenges(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
         List<Challenge> challenges = challengeRepository.findAll();
         return challenges.stream().map(ChallengeDTO::new).toList();
     }

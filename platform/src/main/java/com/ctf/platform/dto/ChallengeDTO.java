@@ -13,9 +13,10 @@ public class ChallengeDTO {
     private String title;
     private String description;
     private String difficulty;
+    private Integer points;
     private String categoryName;
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private String flag;
+    private boolean isSolved;
+
 
     public ChallengeDTO(Challenge challenge){
         this.title = challenge.getTitle();

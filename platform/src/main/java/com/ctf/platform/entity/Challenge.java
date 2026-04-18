@@ -30,6 +30,7 @@ public class Challenge {
     @JsonIgnore
     private String flag;
     private String difficulty;
+    private int points;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
