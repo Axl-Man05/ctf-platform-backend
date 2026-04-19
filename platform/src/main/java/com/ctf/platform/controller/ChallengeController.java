@@ -24,7 +24,7 @@ public class ChallengeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Challenge> challengesById(@PathVariable("id") Long idChallenge){
+    public ResponseEntity<ChallengeDTO> challengesById(@PathVariable("id") Long idChallenge){
         return ResponseEntity.ok(challengeService.getChallengeByID(idChallenge));
     }
 

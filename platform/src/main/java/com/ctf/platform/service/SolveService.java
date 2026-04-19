@@ -47,7 +47,7 @@ public class SolveService {
         Long challengeId = dto.getChallengeId();
 
         User user =  userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new IllegalArgumentException("Usuario not found"));
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         Challenge challenge = challengeRepository.findById(challengeId)
                 .orElseThrow(() -> new IllegalArgumentException("ID not found"));

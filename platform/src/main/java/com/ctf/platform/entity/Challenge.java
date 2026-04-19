@@ -27,10 +27,10 @@ public class Challenge {
     @NotBlank
     private String description;
     @NotBlank
-    @JsonIgnore
     private String flag;
     private String difficulty;
     private int points;
+    private boolean isSolved;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
