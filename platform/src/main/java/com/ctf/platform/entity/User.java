@@ -73,7 +73,7 @@ public class User implements UserDetails {
     @Override
     @JsonIgnore
     public boolean isEnabled(){
-        return true; //El usuario esta activo desde que se registra
+        return Boolean.TRUE.equals(this.isVerified); //El usuario esta activo desde que se registra
     }
 
     @Override

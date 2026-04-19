@@ -1,6 +1,8 @@
 package com.ctf.platform.exception;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -28,5 +30,14 @@ public class GlobalExceptionHandler {
         error.put("error", ex.getMessage());
 
         return ResponseEntity.badRequest().body(error);
+    }
+
+    @ExceptionHandler(DisabledException.class)
+    public ResponseEntity<Map<String, String>> handleDisabledException(DisabledException ex){
+        Map<String, String> error = new HashMap<>();
+        error.put("error", "Account not enabled");
+        error.put("message", "Please, verify your email to log in");
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
     }
 }
