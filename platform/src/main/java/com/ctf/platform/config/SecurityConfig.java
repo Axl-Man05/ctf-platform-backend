@@ -47,14 +47,14 @@ public class SecurityConfig {
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/api/users/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/challenges").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/hints/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/scoreboard").permitAll()
                         .requestMatchers("/admin/**").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/challenges").hasAuthority("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/api/challenges").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/hints").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/users/**").hasAuthority("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/scoreboard").permitAll()
                         .anyRequest().authenticated()
                 ).addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
