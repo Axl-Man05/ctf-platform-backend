@@ -13,7 +13,9 @@ public interface SolveRepository extends JpaRepository<Solve, Long> {
     boolean existsByUserAndChallenge(User user, Challenge challenge);
     List<Solve> findByUser(User user);
 
-    @Query("SELECT new com.ctf.platform.dto.ScoreboardDTO(s.user.userName, COUNT(s)) " +
-            "FROM Solve s GROUP BY s.user.userName ORDER BY COUNT(s) DESC")
-    List<ScoreboardDTO> getGlobalScoreboard();
+    @Query("SELECT new com.ctf.platform.dto.ScoreboardDTO(s.user.username, SUM(s.challenge.points)) " +
+            "FROM Solve s " +
+            "GROUP BY s.user.username " +
+            "ORDER BY SUM(s.challenge.points) DESC")
+    List<ScoreboardDTO> getScoreboard();
 }
