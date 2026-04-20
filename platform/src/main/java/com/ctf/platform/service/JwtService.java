@@ -6,6 +6,7 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class JwtService {
     @Value("${jwt.secret}")
@@ -56,13 +58,13 @@ public class JwtService {
                     .getPayload().getSubject();
 
         }catch (ExpiredJwtException e){
-            System.out.println("El token ha expirado");
+            log.warn("the JWT token has expired");
         }catch (SignatureException e){
-            System.out.println("Firma del token invalida");
+            log.warn("invalid token signature");
         }catch (MalformedJwtException e){
-           System.out.println("formato del token incorrecto");
+           log.warn("invalid token format");
         }catch (JwtException | IllegalArgumentException e){
-            System.out.println("Error al procesar el token: " + e.getMessage());
+            log.warn("Error processing token: ", e.getMessage());
         }
         return null;
     }
