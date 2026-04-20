@@ -21,11 +21,13 @@ public class ChallengeDTO {
 
 
     public ChallengeDTO(Challenge challenge){
+        this.id = challenge.getId();
         this.title = challenge.getTitle();
         this.description = challenge.getDescription();
         this.difficulty = challenge.getDifficulty();
         this.categoryName = challenge.getCategory().getName();
         this.points = challenge.getPoints();
         this.isSolved = challenge.isSolved();
+        this.points = challenge.getPoints();
     }
 }
