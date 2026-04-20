@@ -1,6 +1,7 @@
 package com.ctf.platform.service;
 
 import com.ctf.platform.dto.RegisterDTO;
+import com.ctf.platform.dto.RegisterResponseDTO;
 import com.ctf.platform.entity.User;
 import com.ctf.platform.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,25 +18,26 @@ import static java.util.UUID.randomUUID;
 public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
-    public User registerUser(RegisterDTO registerDTO){
+    public RegisterResponseDTO registerUser(RegisterDTO registerDTO){
 
-        User newUser = new User();
-        newUser.setUserName(registerDTO.getUsername());
-        newUser.setEmail(registerDTO.getEmail());
-        newUser.setPassword(registerDTO.getPassword());
+        User user = User.builder()
+                .userName(registerDTO.getUsername())
+                .email(registerDTO.getEmail())
+                .password(passwordEncoder.encode(registerDTO.getPassword()))
+                .isVerified(false)
+                .build();
 
-
-        if(userRepository.existsByEmail(newUser.getEmail())){
+        if(userRepository.existsByEmail(user.getEmail())){
             throw new IllegalArgumentException("this Email is already in use");
         }
+        User savedUser = userRepository.save(user);
 
-        newUser.setIsVerified(false);
-        newUser.setVerificationCode(randomUUID().toString());
-
-        String encryptedPass = passwordEncoder.encode(newUser.getPassword());
-        newUser.setPassword(encryptedPass);
-
-        return userRepository.save(newUser);
+        return RegisterResponseDTO.builder()
+                .id(savedUser.getId())
+                .username(savedUser.getUsername())
+                .email(savedUser.getEmail())
+                .isVerified(savedUser.getIsVerified())
+                .build();
     }
 
     public User deleteUser(Long id){
