@@ -2,7 +2,10 @@ package com.ctf.platform.service;
 
 
 import com.ctf.platform.dto.HintDTO;
+import com.ctf.platform.dto.HintRequestDTO;
+import com.ctf.platform.entity.Challenge;
 import com.ctf.platform.entity.Hint;
+import com.ctf.platform.repository.ChallengeRepository;
 import com.ctf.platform.repository.HintRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,8 +16,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class HintService {
     private final HintRepository hintRepository;
-    public Hint createHint(Hint newHint){
-        return hintRepository.save(newHint);
+    private final ChallengeRepository challengeRepository;
+    public HintDTO createHint(HintRequestDTO dto){
+        Challenge challenge = challengeRepository.findById(dto.getChallengeId())
+                .orElseThrow(() -> new IllegalArgumentException("El reto con ID" + dto.getChallengeId() + "no existe"));
+
+        Hint hint = new Hint();
+        hint.setHintText(dto.getHintText());
+        hint.setChallenge(challenge);
+        Hint savedHint = hintRepository.save(hint);
+        return new HintDTO(savedHint);
     }
 
     public Hint getHintByID(Long idHint){
