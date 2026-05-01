@@ -21,7 +21,7 @@ public class SolveController {
     private final SolveService solveService;
 
     @PostMapping
-    public ResponseEntity<SolveResponseDTO> postSolve(@RequestBody @Valid SolveDTO dto){
+    public ResponseEntity<SolveResponseDTO> postSolve(@Valid @RequestBody SolveDTO dto){
         return ResponseEntity.ok(solveService.submitFlag(dto));
     }
 }
