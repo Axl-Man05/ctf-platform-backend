@@ -6,6 +6,7 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +18,7 @@ import java.security.Key;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -24,7 +26,8 @@ import java.util.stream.Collectors;
 public class JwtService {
     @Value("${jwt.secret}")
     private String jwtSecret;
-    private final int jwtExpirationMs = 86400000;
+    @Value("${jwt.expiration-ms}")
+    private Long jwtExpirationMs;
 
     private SecretKey getSigningKey(){
         byte[] keyBytes = Decoders.BASE64.decode(this.jwtSecret);
@@ -50,29 +53,45 @@ public class JwtService {
     }
 
     public String extractEmail(String token){
-        try{
+        return extractClaim(token, Claims::getSubject);
+    }
+    private Date extractExpiration(String token){
+        return extractClaim(token, Claims::getExpiration);
+    }
+    private boolean isTokenExpired(String token){
+        Date expirationDate = extractExpiration(token);
+        return expirationDate == null ? true :  expirationDate.before(new Date());
+    }
+    public boolean isTokenValid(String token, UserDetails userDetails){
+        final String email = extractEmail(token);
+        return email == null ? false : email.equals(userDetails.getUsername()) && !isTokenExpired(token);
+    }
+
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver){
+        final Claims claims = extractAllClaims(token);
+        return claims != null ? claimsResolver.apply(claims) : null;
+    }
+    private Claims extractAllClaims(String token){
+        try {
             return Jwts.parser()
                     .verifyWith(getSigningKey())
                     .build()
                     .parseSignedClaims(token)
-                    .getPayload().getSubject();
-
+                    .getPayload();
         }catch (ExpiredJwtException e){
-            log.warn("the JWT token has expired");
-        }catch (SignatureException e){
-            log.warn("invalid token signature");
-        }catch (MalformedJwtException e){
-           log.warn("invalid token format");
-        }catch (JwtException | IllegalArgumentException e){
-            log.warn("Error processing token: ", e.getMessage());
+            log.warn("The JWT token has expired");
+        }catch (UnsupportedJwtException e) {
+            log.warn("The JWT token is unsupported");
+        } catch (MalformedJwtException e) {
+            log.warn("Invalid token format");
+        } catch (IllegalArgumentException e) {
+            log.warn("JWT claims string is empty");
+        } catch (Exception e) {
+            log.warn("Error processing token: {}", e.getMessage());
         }
         return null;
     }
 
-    public boolean isTokenValid(String token, UserDetails userDetails){
-        String email = extractEmail(token);
-        return userDetails.getUsername().equals(email);
-    }
 
 
 }
