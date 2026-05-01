@@ -11,8 +11,13 @@ import com.ctf.platform.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.HexFormat;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +28,28 @@ public class ChallengeService {
     private final CategoryRepository categoryRepository;
     private final SolveRepository solveRepository;
     private final UserRepository userRepository;
+    private static final char[] HEX_ARRAY = "0123456789abcdef".toCharArray();
+
+    public String hashFlag(String clearTextFlag){
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] encodedHash = digest.digest(clearTextFlag.trim().getBytes(StandardCharsets.UTF_8));
+            return bytesToHex(encodedHash);
+        }catch (NoSuchAlgorithmException e){
+            throw new RuntimeException("Error al configurar el algoritmo de seguridad ",e);
+        }
+    }
+
+    private String bytesToHex(byte[] bytes) {
+        char[] hexChars = new char[bytes.length * 2];
+        for (int j = 0; j < bytes.length; j++) {
+            int v = bytes[j] & 0xFF;
+            hexChars[j * 2] = HEX_ARRAY[v >>> 4];
+            hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
+        }
+        return new String(hexChars);
+    }
+
 
 
     public Challenge createChallenge(ChallengeDTO dto) {
@@ -39,7 +66,7 @@ public class ChallengeService {
                 .title(dto.getTitle())
                 .description(dto.getDescription())
                 .difficulty(dto.getDifficulty())
-                .flag(dto.getFlag()) // <--- Ya no estará en rojo
+                .flag(hashFlag(dto.getFlag())) // <--- Ya no estará en rojo
                 .category(finalCategory) // <-- Usamos el OBJETO finalCategory
                 .points(dto.getPoints())
                 .build();
