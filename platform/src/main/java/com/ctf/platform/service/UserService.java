@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import static java.util.UUID.randomUUID;
 
@@ -40,7 +41,7 @@ public class UserService {
                 .build();
     }
 
-    public User deleteUser(Long id){
+    public User deleteUser(UUID id){
        User user = userRepository.findById(id)
                .orElseThrow(() -> new IllegalArgumentException("User not found"));
        userRepository.delete(user);

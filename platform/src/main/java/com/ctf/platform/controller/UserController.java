@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/users")
@@ -38,7 +39,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteAccount(@PathVariable Long id){
+    public ResponseEntity<String> deleteAccount(@PathVariable UUID id){
         userService.deleteUser(id);
         return ResponseEntity.ok("The account has been successfully deleted");
     }
