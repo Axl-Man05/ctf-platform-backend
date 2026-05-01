@@ -52,7 +52,7 @@ public class ChallengeService {
 
 
 
-    public Challenge createChallenge(ChallengeDTO dto) {
+    public ChallengeDTO createChallenge(ChallengeDTO dto) {
         // 1. Buscamos o creamos la categoría (esto ya lo tienes bien)
         Category finalCategory = categoryRepository.findByName(dto.getCategoryName())
                 .orElseGet(() -> {
@@ -70,8 +70,8 @@ public class ChallengeService {
                 .category(finalCategory) // <-- Usamos el OBJETO finalCategory
                 .points(dto.getPoints())
                 .build();
-
-        return challengeRepository.save(newChallenge);
+        Challenge savedChallenge = challengeRepository.save(newChallenge);
+        return convertToDTO(savedChallenge);
     }
 
     public List<ChallengeDTO> getChallenges(){

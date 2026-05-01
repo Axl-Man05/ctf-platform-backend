@@ -34,9 +34,9 @@ public class ChallengeController {
     }
 
     @PostMapping
-    public ResponseEntity<Challenge> postChallenge(@RequestBody @Valid ChallengeDTO dto){
-        Challenge createdChallenge = challengeService.createChallenge(dto);
-        return ResponseEntity.ok(createdChallenge);
+    public ResponseEntity<ChallengeDTO> postChallenge(@RequestBody @Valid ChallengeDTO dto){
+        ChallengeDTO responseDTO = challengeService.createChallenge(dto);
+        return ResponseEntity.ok(responseDTO);
     }
 
 }
