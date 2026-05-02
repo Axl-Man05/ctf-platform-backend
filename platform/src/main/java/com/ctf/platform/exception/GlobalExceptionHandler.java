@@ -1,5 +1,6 @@
 package com.ctf.platform.exception;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.DisabledException;
@@ -39,5 +40,19 @@ public class GlobalExceptionHandler {
         error.put("message", "Please, verify your email to log in");
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Map<String, String>> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+        Map<String, String> errorResponse = new HashMap<>();
+        errorResponse.put("error", "Conflict");
+
+        String message = ex.getMessage() != null && ex.getMessage().contains("already in use")
+                ? ex.getMessage()
+                : "Data integrity violation occurred";
+
+        errorResponse.put("message", message);
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
     }
 }

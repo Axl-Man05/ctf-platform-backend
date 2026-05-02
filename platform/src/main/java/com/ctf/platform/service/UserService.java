@@ -5,14 +5,11 @@ import com.ctf.platform.dto.RegisterResponseDTO;
 import com.ctf.platform.entity.User;
 import com.ctf.platform.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 import java.util.UUID;
+import org.springframework.dao.DataIntegrityViolationException;
 
-import static java.util.UUID.randomUUID;
 
 @Service
 @RequiredArgsConstructor
@@ -21,17 +18,21 @@ public class UserService {
     private final UserRepository userRepository;
     public RegisterResponseDTO registerUser(RegisterDTO registerDTO){
 
+        if(userRepository.findByEmail(registerDTO.getEmail()).isPresent()){
+            throw new IllegalArgumentException("this Email is already in use");
+        }
         User user = User.builder()
                 .userName(registerDTO.getUsername())
                 .email(registerDTO.getEmail())
                 .password(passwordEncoder.encode(registerDTO.getPassword()))
                 .isVerified(false)
                 .build();
-
-        if(userRepository.existsByEmail(user.getEmail())){
-            throw new IllegalArgumentException("this Email is already in use");
+        User savedUser;
+        try{
+            savedUser = userRepository.save(user);
+        }catch (DataIntegrityViolationException e){
+            throw new DataIntegrityViolationException("this Email is already in use");
         }
-        User savedUser = userRepository.save(user);
 
         return RegisterResponseDTO.builder()
                 .id(savedUser.getId())
