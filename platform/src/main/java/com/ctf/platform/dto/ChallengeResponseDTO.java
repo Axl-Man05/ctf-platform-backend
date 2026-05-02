@@ -16,4 +16,5 @@ public class ChallengeResponseDTO {
     String difficulty;
     String categoryName;
     int points;
+    boolean isSolved;
 }

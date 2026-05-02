@@ -27,7 +27,5 @@ public class ChallengeDTO {
         this.difficulty = challenge.getDifficulty();
         this.categoryName = challenge.getCategory().getName();
         this.points = challenge.getPoints();
-        this.isSolved = challenge.isSolved();
-        this.points = challenge.getPoints();
     }
 }

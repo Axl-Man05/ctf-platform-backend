@@ -1,6 +1,7 @@
 package com.ctf.platform.service;
 
 import com.ctf.platform.dto.ChallengeDTO;
+import com.ctf.platform.dto.ChallengeResponseDTO;
 import com.ctf.platform.entity.Category;
 import com.ctf.platform.entity.Challenge;
 import com.ctf.platform.entity.User;
@@ -54,8 +55,7 @@ public class ChallengeService {
 
 
 
-    public ChallengeDTO createChallenge(ChallengeDTO dto) {
-        // 1. Buscamos o creamos la categoría (esto ya lo tienes bien)
+    public ChallengeResponseDTO createChallenge(ChallengeDTO dto) {
         Category finalCategory = categoryRepository.findByName(dto.getCategoryName())
                 .orElseGet(() -> {
                     Category newCategory = new Category();
@@ -63,32 +63,29 @@ public class ChallengeService {
                     return categoryRepository.save(newCategory);
                 });
 
-        // 2. Construimos la entidad (Aquí dto.getFlag() ya funcionará)
         Challenge newChallenge = Challenge.builder()
                 .title(dto.getTitle())
                 .description(dto.getDescription())
                 .difficulty(dto.getDifficulty())
-                .flag(hashFlag(dto.getFlag())) // <--- Ya no estará en rojo
-                .category(finalCategory) // <-- Usamos el OBJETO finalCategory
+                .flag(hashFlag(dto.getFlag()))
+                .category(finalCategory)
                 .points(dto.getPoints())
                 .build();
         Challenge savedChallenge = challengeRepository.save(newChallenge);
         return convertToDTO(savedChallenge);
     }
 
-    public List<ChallengeDTO> getChallenges(){
-        List<Challenge> challenges = challengeRepository.findAll();
-
-        return challenges.stream().map(this::convertToDTO).toList();
+    public List<ChallengeResponseDTO> getChallenges(){
+        return challengeRepository.findAll().stream().map(this::convertToDTO).toList();
     }
 
-    public ChallengeDTO getChallengeByID(Long idChallenge){
+    public ChallengeResponseDTO getChallengeByID(Long idChallenge){
         Challenge challenge = challengeRepository.findById(idChallenge)
                 .orElseThrow(() -> new IllegalArgumentException("The Challenge with ID " + idChallenge + "doesn't exist"));
         return convertToDTO(challenge);
     }
 
-    private ChallengeDTO convertToDTO(Challenge challenge){
+    private ChallengeResponseDTO convertToDTO(Challenge challenge){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         boolean solved = false;
 
@@ -100,21 +97,19 @@ public class ChallengeService {
             }
         }
 
-        return ChallengeDTO.builder()
+        return ChallengeResponseDTO.builder()
                 .id(challenge.getId())
                 .title(challenge.getTitle())
                 .description(challenge.getDescription())
                 .difficulty(challenge.getDifficulty())
                 .categoryName(challenge.getCategory().getName())
                 .points(challenge.getPoints())
-                .isSolved(solved) // ¡Aquí está la magia para el Frontend!
+                .isSolved(solved)
                 .build();
-        }
+    }
 
-    public List<ChallengeDTO> getChallengesByCategoryName(String categoryName){
-        List<Challenge> filterChallenges = challengeRepository.findByCategoryName(categoryName);
-
-        return filterChallenges.stream().map(ChallengeDTO::new).toList();
+    public List<ChallengeResponseDTO> getChallengesByCategoryName(String categoryName){
+        return challengeRepository.findByCategoryName(categoryName).stream().map(this::convertToDTO).toList();
     }
 
 }

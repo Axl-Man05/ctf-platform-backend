@@ -31,7 +31,6 @@ public class Challenge {
     private String flag;
     private String difficulty;
     private int points;
-    private boolean isSolved;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
