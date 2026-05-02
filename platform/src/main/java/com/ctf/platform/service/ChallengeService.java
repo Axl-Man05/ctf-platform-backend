@@ -9,11 +9,13 @@ import com.ctf.platform.repository.ChallengeRepository;
 import com.ctf.platform.repository.SolveRepository;
 import com.ctf.platform.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -75,10 +77,9 @@ public class ChallengeService {
     }
 
     public List<ChallengeDTO> getChallenges(){
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String email = auth.getName();
         List<Challenge> challenges = challengeRepository.findAll();
-        return challenges.stream().map(ChallengeDTO::new).toList();
+
+        return challenges.stream().map(this::convertToDTO).toList();
     }
 
     public ChallengeDTO getChallengeByID(Long idChallenge){
@@ -88,12 +89,17 @@ public class ChallengeService {
     }
 
     private ChallengeDTO convertToDTO(Challenge challenge){
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         boolean solved = false;
-        Optional<User> userOptional = userRepository.findByEmail(email);
-        if(userOptional.isPresent()){
-            solved = solveRepository.existsByUserAndChallenge(userOptional.get(), challenge);
+
+        if(auth != null && auth.isAuthenticated() && !auth.getName().equals("anonymousUser")){
+            Optional<User> userOptional = userRepository.findByEmail(auth.getName());
+
+            if(userOptional.isPresent()){
+                solved = solveRepository.existsByUserAndChallenge(userOptional.get(), challenge);
+            }
         }
+
         return ChallengeDTO.builder()
                 .id(challenge.getId())
                 .title(challenge.getTitle())
@@ -103,7 +109,7 @@ public class ChallengeService {
                 .points(challenge.getPoints())
                 .isSolved(solved) // ¡Aquí está la magia para el Frontend!
                 .build();
-    }
+        }
 
     public List<ChallengeDTO> getChallengesByCategoryName(String categoryName){
         List<Challenge> filterChallenges = challengeRepository.findByCategoryName(categoryName);
