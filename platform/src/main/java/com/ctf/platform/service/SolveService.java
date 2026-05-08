@@ -10,6 +10,7 @@ import com.ctf.platform.repository.ChallengeRepository;
 import com.ctf.platform.repository.SolveRepository;
 import com.ctf.platform.repository.UserRepository;
 import com.ctf.platform.util.FlagHasher;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -43,7 +44,7 @@ public class SolveService {
         return MessageDigest.isEqual(correctFlagBytes, submittedFlagBytes);
     }
 
-
+    @Transactional
     public SolveResponseDTO submitFlag(SolveDTO dto){
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         Long challengeId = dto.getChallengeId();

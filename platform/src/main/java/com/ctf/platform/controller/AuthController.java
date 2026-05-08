@@ -1,8 +1,12 @@
 package com.ctf.platform.controller;
 
+import com.ctf.platform.dto.AuthResponseDTO;
 import com.ctf.platform.dto.LoginDTO;
+import com.ctf.platform.entity.Role;
+import com.ctf.platform.entity.User;
 import com.ctf.platform.service.CustomUserDetailsService;
 import com.ctf.platform.service.JwtService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,16 +26,18 @@ public class AuthController {
     private final JwtService jwtService;
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginDTO loginDTO){
+    public ResponseEntity<AuthResponseDTO> login(@RequestBody @Valid LoginDTO loginDTO){
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword())
         );
+        User user = (User) customUserDetailsService.loadUserByUsername(loginDTO.getEmail());
+        String jwt = jwtService.generateJwtToken(user);
 
-        UserDetails userDetails = customUserDetailsService.loadUserByUsername(loginDTO.getEmail());
 
-        String jwt = jwtService.generateJwtToken(userDetails);
-
-        return ResponseEntity.ok(jwt);
+        return ResponseEntity.ok(AuthResponseDTO.builder()
+                .token(jwt)
+                .username(user.getUsername())
+                .roles(user.getRoles().stream().map(Role::getRoleName).toList())
+                .build());
     }
-
 }
