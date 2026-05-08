@@ -11,6 +11,8 @@ import com.ctf.platform.repository.SolveRepository;
 import com.ctf.platform.repository.UserRepository;
 import com.ctf.platform.util.FlagHasher;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -26,7 +28,7 @@ public class ChallengeService {
     private final CategoryRepository categoryRepository;
     private final SolveRepository solveRepository;
     private final UserRepository userRepository;
-    private final FlagHasher flagHasher; 
+    private final FlagHasher flagHasher;
 
     public ChallengeResponseDTO createChallenge(ChallengeDTO dto) {
         Category finalCategory = categoryRepository.findByName(dto.getCategoryName())
@@ -49,8 +51,8 @@ public class ChallengeService {
         return convertToDTO(savedChallenge);
     }
 
-    public List<ChallengeResponseDTO> getChallenges(){
-        return challengeRepository.findAll().stream().map(this::convertToDTO).toList();
+    public Page<ChallengeResponseDTO> getChallenges(Pageable pageable){
+        return challengeRepository.findAll(pageable).map(this::convertToDTO);
     }
 
     public ChallengeResponseDTO getChallengeByID(Long idChallenge){

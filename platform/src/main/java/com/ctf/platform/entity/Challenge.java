@@ -37,6 +37,7 @@ public class Challenge {
     private Category category;
 //relacion bidireccional
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "challenge")
+    @JsonIgnore
     private List<Solve> solves;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "challenge")

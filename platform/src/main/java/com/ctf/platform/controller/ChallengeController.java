@@ -6,6 +6,10 @@ import com.ctf.platform.dto.ChallengeResponseDTO;
 import com.ctf.platform.service.ChallengeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,10 +21,13 @@ import java.util.List;
 public class ChallengeController {
     private final ChallengeService challengeService;
 
+    // ChallengeController.java
     @GetMapping
-    public ResponseEntity<List<ChallengeResponseDTO>> listChallenges(){
-        return ResponseEntity.ok(challengeService.getChallenges());
+    public ResponseEntity<Page<ChallengeResponseDTO>> listChallenges(
+            @PageableDefault(size = 20, sort = "points") Pageable pageable) {
+        return ResponseEntity.ok(challengeService.getChallenges(pageable));
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<ChallengeResponseDTO> challengesById(@PathVariable("id") Long idChallenge){
