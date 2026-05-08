@@ -28,9 +28,10 @@ public class HintService {
         return new HintDTO(savedHint);
     }
 
-    public Hint getHintByID(Long idHint){
-        return hintRepository.findById(idHint).
-                orElseThrow(() -> new IllegalArgumentException("ID doesn't exist"));
+    public HintDTO getHintByID(Long idHint){
+        Hint hint = hintRepository.findById(idHint)
+                .orElseThrow(() -> new IllegalArgumentException("ID doesn't exist"));
+        return new HintDTO(hint);
     }
 
     public List<HintDTO> getAllHintsForChallenge(Long challengeID){

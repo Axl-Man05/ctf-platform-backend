@@ -9,6 +9,7 @@ import com.ctf.platform.entity.User;
 import com.ctf.platform.repository.ChallengeRepository;
 import com.ctf.platform.repository.SolveRepository;
 import com.ctf.platform.repository.UserRepository;
+import com.ctf.platform.util.FlagHasher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ public class SolveService {
     private final SolveRepository solveRepository;
     private final ChallengeRepository challengeRepository;
     private final UserRepository userRepository;
+    private final FlagHasher flagHasher;
 
     public Solve saveSolve (Solve newSolve) {
         return solveRepository.save(newSolve);
@@ -32,11 +34,11 @@ public class SolveService {
     public boolean validateFlag(Challenge challenge, String userSubmittedFlag){
         if(userSubmittedFlag == null) return false;
 
-        String cleanedSubmittedFlag = userSubmittedFlag.trim();
+        String hashedSubmitted = flagHasher.hashFlag(userSubmittedFlag.trim());
         String correctFlag = challenge.getFlag();
 
         byte[] correctFlagBytes = correctFlag.getBytes(StandardCharsets.UTF_8);
-        byte[] submittedFlagBytes = cleanedSubmittedFlag.getBytes(StandardCharsets.UTF_8);
+        byte[] submittedFlagBytes = hashedSubmitted.getBytes(StandardCharsets.UTF_8);
 
         return MessageDigest.isEqual(correctFlagBytes, submittedFlagBytes);
     }

@@ -20,7 +20,7 @@ public class HintController {
     private final HintService hintService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<Hint> hintsByID(@PathVariable Long id){
+    public ResponseEntity<HintDTO> hintsByID(@PathVariable Long id){
         return ResponseEntity.ok(hintService.getHintByID(id));
     }
 

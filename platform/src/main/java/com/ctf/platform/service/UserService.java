@@ -5,8 +5,12 @@ import com.ctf.platform.dto.RegisterResponseDTO;
 import com.ctf.platform.entity.User;
 import com.ctf.platform.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import java.util.UUID;
 import org.springframework.dao.DataIntegrityViolationException;
 
@@ -42,11 +46,21 @@ public class UserService {
                 .build();
     }
 
-    public User deleteUser(UUID id){
+    public void deleteUser(UUID id){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        boolean isAdmin = auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ADMIN"));
+
+        if(!isAdmin){
+            User requester = userRepository.findByEmail(auth.getName())
+                    .orElseThrow(() -> new IllegalArgumentException("user not Found"));
+            if (!requester.getId().equals(id)){
+                throw new AccessDeniedException("You cannot delete another user's account");
+            }
+        }
        User user = userRepository.findById(id)
                .orElseThrow(() -> new IllegalArgumentException("User not found"));
        userRepository.delete(user);
-       return user;
     }
 
     public User verifyAccount(String code){
