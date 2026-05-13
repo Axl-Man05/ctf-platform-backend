@@ -1,5 +1,6 @@
 package com.ctf.platform.repository;
 
+import com.ctf.platform.dto.ScoreboardDTO;
 import com.ctf.platform.entity.Challenge;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

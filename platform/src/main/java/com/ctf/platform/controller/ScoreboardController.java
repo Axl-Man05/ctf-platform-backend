@@ -16,8 +16,8 @@ import java.util.List;
 public class ScoreboardController {
     private final ScoreboardService scoreboardService;
 
-    @GetMapping
-    public ResponseEntity<List<ScoreboardDTO>> showTopPlayers(){
-        return ResponseEntity.ok(scoreboardService.getTopPlayer());
-    }
+//    @GetMapping
+//    public ResponseEntity<List<ScoreboardDTO>> showTopPlayers(){
+//        return ResponseEntity.ok(scoreboardService.getTopPlayer());
+//    }
 }

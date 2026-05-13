@@ -12,8 +12,8 @@ import java.util.List;
 public class ScoreboardService {
     private final SolveRepository solveRepository;
 
-    public List<ScoreboardDTO> getTopPlayer(){
-        return solveRepository.getGlobalScoreboard();
-    }
+//    public List<ScoreboardDTO> getTopPlayer(){
+//        return solveRepository.getGlobalScoreboard();
+//    }
 
 }
